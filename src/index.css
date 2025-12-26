@@ -1,0 +1,152 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 自定义基础样式 */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply text-gray-800 bg-gray-50 m-0;
+  }
+
+  /* 化学公式上下标 */
+  sub {
+    @apply text-xs;
+    vertical-align: sub;
+  }
+
+  sup {
+    @apply text-xs;
+    vertical-align: super;
+  }
+}
+
+/* 自定义组件样式 */
+@layer components {
+  /* 章节标题样式 */
+  .chapter-title {
+    @apply text-2xl font-bold text-gray-900 mb-4 pb-2 border-b-2 border-primary-500;
+  }
+
+  .section-title {
+    @apply text-xl font-semibold text-gray-800 mt-6 mb-3;
+  }
+
+  /* 卡片样式 */
+  .card {
+    @apply bg-white rounded-lg shadow-md p-4 mb-4;
+  }
+
+  .card-hover {
+    @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5;
+  }
+
+  /* 化学方程式样式 */
+  .equation {
+    @apply font-mono bg-gray-100 px-3 py-2 rounded text-center my-2;
+  }
+
+  /* 表格样式 */
+  .chem-table {
+    @apply w-full border-collapse;
+  }
+
+  .chem-table th {
+    @apply bg-primary-100 text-primary-900 font-semibold px-4 py-2 border border-gray-300;
+  }
+
+  .chem-table td {
+    @apply px-4 py-2 border border-gray-300;
+  }
+
+  .chem-table tr:nth-child(even) {
+    @apply bg-gray-50;
+  }
+
+  /* 侧边栏导航项 */
+  .nav-item {
+    @apply block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-700 rounded-md transition-colors;
+  }
+
+  .nav-item.active {
+    @apply bg-primary-100 text-primary-800 font-medium;
+  }
+
+  /* 可折叠区域 */
+  .collapsible-header {
+    @apply flex items-center justify-between cursor-pointer p-3 bg-gray-100 hover:bg-gray-200 rounded-t-lg transition-colors;
+  }
+
+  .collapsible-content {
+    @apply overflow-hidden transition-all duration-300;
+  }
+
+  /* SVG 图表容器 */
+  .diagram-container {
+    @apply w-full flex justify-center my-6;
+  }
+
+  .diagram-svg {
+    @apply max-w-full h-auto;
+  }
+
+  /* 节点样式 */
+  .node-box {
+    @apply cursor-pointer transition-all duration-200;
+  }
+
+  .node-box:hover {
+    filter: brightness(1.1);
+  }
+
+  /* 提示框 */
+  .tooltip {
+    @apply absolute z-50 bg-gray-900 text-white text-sm px-3 py-2 rounded shadow-lg max-w-xs;
+  }
+
+  /* 口诀/重点框 */
+  .highlight-box {
+    @apply bg-yellow-50 border-l-4 border-yellow-400 p-4 my-4;
+  }
+
+  .warning-box {
+    @apply bg-red-50 border-l-4 border-red-400 p-4 my-4;
+  }
+
+  .info-box {
+    @apply bg-blue-50 border-l-4 border-blue-400 p-4 my-4;
+  }
+}
+
+/* 自定义动画 */
+@layer utilities {
+  .animate-draw-line {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: drawLine 1s ease-out forwards;
+  }
+
+  @keyframes drawLine {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+/* 打印样式 */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .diagram-svg {
+    page-break-inside: avoid;
+  }
+}
