@@ -28,19 +28,9 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      # 可选：固定 npm 版本，规避部分 npm CLI 的奇怪 bug
-      - name: Use stable npm
-        run: npm install -g npm@10
-
+      # 关键：用最基础的 npm install，避免 npm ci 和奇怪参数组合
       - name: Install dependencies
-        run: |
-          if [ -f package-lock.json ]; then
-            echo "Detected package-lock.json, using npm ci"
-            npm ci --include=dev
-          else
-            echo "No package-lock.json, using npm install"
-            npm install --include=dev
-          fi
+        run: npm install
 
       - name: Build with Vite
         run: npm run build
