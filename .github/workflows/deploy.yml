@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ['main']
+    branches:  ['main']
   workflow_dispatch:
 
 permissions:
@@ -24,76 +24,15 @@ jobs:
 
       - name: Setup Node
         uses: actions/setup-node@v4
-        with:
+        with: 
           node-version: '20'
+          cache: 'npm'
 
-      - name: Show node & npm versions
-        run: |
-          echo "=== node & npm ==="
-          node -v
-          npm -v
-          echo "=== npm config ==="
-          npm config list
-
-      - name: Cache npm registry cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-cache-
-
-      - name: Clean npm cache (optional)
-        run: npm cache clean --force
-
-      - name: Install dependencies (retry up to 3)
-        run: |
-          set -euxo pipefail
-          ATTEMPTS=3
-          for i in $(seq 1 $ATTEMPTS); do
-            echo ">>> install attempt $i"
-            if [ -f package-lock.json ]; then
-              npm ci --legacy-peer-deps && break
-            else
-              npm install --legacy-peer-deps && break
-            fi
-            echo "Install failed (attempt $i)"
-            if [ "$i" -lt "$ATTEMPTS" ]; then
-              sleep 5
-            else
-              echo "All install attempts failed — printing npm debug logs (if exist)"
-              ls -la /home/runner/.npm/_logs || true
-              exit 1
-            fi
-          done
-
-      - name: Show installed binaries and vite
-        run: |
-          echo "=== node_modules/.bin ==="
-          ls -la node_modules/.bin || true
-          echo "Check vite executable"
-          if command -v vite >/dev/null 2>&1; then
-            echo "vite found: $(command -v vite)"
-          else
-            echo "vite not found in PATH; check devDependencies and install step"
-          fi
+      - name: Install dependencies
+        run: npm ci
 
       - name: Build
-        run: |
-          set -euxo pipefail
-          # prefer using package.json script
-          npm run build
-
-      - name: Show dist directory for debugging
-        run: |
-          echo "=== ls -la ./dist ==="
-          if [ -d "./dist" ]; then
-            ls -la ./dist
-            du -sh ./dist || true
-          else
-            echo "dist directory not found"
-            exit 1
-          fi
+        run: npm run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -106,13 +45,10 @@ jobs:
   deploy:
     environment:
       name: github-pages
+      url: ${{ steps. deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-      - name: Show GitHub Pages URL
-        run: |
-          echo "Deployed page_url=${{ steps.deployment.outputs.page_url }}"
